@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Zenith Launcher</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 22px;
+      color: #00ffcc;
+    }
+
+    .btn {
+      background: #00ffcc;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+
+    .btn:hover {
+      background: #00ccaa;
+    }
+
+    .status {
+      font-weight: bold;
+      color: lime;
+    }
+
+    .offline {
+      color: red;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .input-container input {
+      width: 70%;
+      padding: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .input-container button {
+      width: 25%;
+      background: #ff5722;
+      border-radius: 5px;
+      padding: 5px;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+    }
+
+    .server-list {
+      margin-top: 20px;
+    }
+
+    .server-list div {
+      background: #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .server-list button {
+      background: #f44336;
+      border: none;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Status do Servidor SAMP</h2>
+    <p><strong>Nome:</strong> <span id="nome">Carregando...</span></p>
+    <p><strong>Jogadores:</strong> <span id="jogadores">-</span></p>
+    <p><strong>Status:</strong> <span id="status" class="status">Conectando...</span></p>
+    <button class="btn" onclick="entrarNoServidor()">Entrar no Servidor</button>
+    
+    <div class="input-container">
+      <input type="text" id="inputIp" placeholder="IP do servidor" />
+      <input type="number" id="inputPorta" placeholder="Porta" />
+      <button onclick="adicionarServidor()">Adicionar</button>
+    </div>
+
+    <div class="server-list" id="serverList">
+      <!-- Lista de servidores -->
+    </div>
+  </div>
+
+  <script>
+    const ip = "IP_DO_SEU_SERVIDOR";
+    const porta = "PORTA_DO_SERVIDOR";
+
+    // Função para buscar status do servidor
+    function buscarServidor(ip, porta) {
+      fetch(https://api.open.mp/servers?ip=${ip}&port=${porta})
+        .then(res => res.json())
+        .then(data => {
+          if (data.hostname) {
+            document.getElementById("nome").innerText = data.hostname;
+            document.getElementById("jogadores").innerText = ${data.players}/${data.maxplayers};
+            document.getElementById("status").innerText = "Online";
+          } else {
+            document.getElementById("nome").innerText = "Servidor indisponível";
+            document.getElementById("jogadores").innerText = "-";
+            document.getElementById("status").innerText = "Offline";
+            document.getElementById("status").classList.remove("status");
+            document.getElementById("status").classList.add("offline");
+          }
+        })
+        .catch(() => {
+          document.getElementById("nome").innerText = "Erro ao conectar";
+          document.getElementById("status").innerText = "Offline";
+          document.getElementById("status").classList.remove("status");
+          document.getElementById("status").classList.add("offline");
+        });
+    }
+
+    // Função para abrir o servidor no SAMP
+    function entrarNoServidor() {
+      window.location.href = samp://${ip}:${porta};
+    }
+
+    // Função para adicionar um servidor à lista
+    function adicionarServidor() {
+      const inputIp = document.getElementById("inputIp").value;
+      const inputPorta = document.getElementById("inputPorta").value;
+
+      if (inputIp && inputPorta) {
+        const serverItem = document.createElement("div");
+        serverItem.innerHTML = 
+          <strong>IP:</strong> ${inputIp} <strong>Porta:</strong> ${inputPorta}
+          <button onclick="deletarServidor(this)">Deletar</button>
+        ;
+        document.getElementById("serverList").appendChild(serverItem);
+        localStorage.setItem(server_${inputIp}_${inputPorta}, JSON.stringify({ ip: inputIp, porta: inputPorta }));
+      }
+    }
+
+    // Função para deletar servidor
+    function deletarServidor(button) {
+      const serverItem = button.parentElement;
+      serverItem.remove();
+
+      const ip = serverItem.querySelector('strong').nextElementSibling.textContent.split(":")[1].trim();
+      const porta = serverItem.querySelector('strong').nextElementSibling.nextElementSibling.textContent.trim();
+
+      localStorage.removeItem(server_${ip}_${porta});
+    }
+
+    // Função para carregar servidores da localStorage
+    function carregarServidores() {
+      const servidoresSalvos = Object.keys(localStorage).filter(key => key.startsWith('server_'));
+
+      servidoresSalvos.forEach(key => {
+        const servidor = JSON.parse(localStorage.getItem(key));
+        const serverItem = document.createElement("div");
+        serverItem.innerHTML = 
+          <strong>IP:</strong> ${servidor.ip} <strong>Porta:</strong> ${servidor.porta}
+          <button onclick="deletarServidor(this)">Deletar</button>
+        ;
+        document.getElementById("serverList").appendChild(serverItem);
+      });
+    }
+
+    // Carregar servidores ao abrir
+    window.onload = carregarServidores;
+  </script>
+
+</body>
+</html>
