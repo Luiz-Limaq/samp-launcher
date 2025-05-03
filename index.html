@@ -1,199 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Zenith Launcher</title>
-  <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
-    .card {
-      background: #1e1e1e;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-      box-shadow: 0 0 10px #000;
-    }
-
-    .card h2 {
-      margin-top: 0;
-      font-size: 22px;
-      color: #00ffcc;
-    }
-
-    .btn {
-      background: #00ffcc;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-top: 15px;
-    }
-
-    .btn:hover {
-      background: #00ccaa;
-    }
-
-    .status {
-      font-weight: bold;
-      color: lime;
-    }
-
-    .offline {
-      color: red;
-    }
-
-    .input-container {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
-    }
-
-    .input-container input {
-      width: 70%;
-      padding: 5px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .input-container button {
-      width: 25%;
-      background: #ff5722;
-      border-radius: 5px;
-      padding: 5px;
-      color: #fff;
-      border: none;
-      font-size: 16px;
-    }
-
-    .server-list {
-      margin-top: 20px;
-    }
-
-    .server-list div {
-      background: #333;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-
-    .server-list button {
-      background: #f44336;
-      border: none;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launcher SAMP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .server-list {
+            margin-top: 20px;
+        }
+        .server-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .server-info {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .favorite {
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Status do Servidor SAMP</h2>
-    <p><strong>Nome:</strong> <span id="nome">Carregando...</span></p>
-    <p><strong>Jogadores:</strong> <span id="jogadores">-</span></p>
-    <p><strong>Status:</strong> <span id="status" class="status">Conectando...</span></p>
-    <button class="btn" onclick="entrarNoServidor()">Entrar no Servidor</button>
-    
-    <div class="input-container">
-      <input type="text" id="inputIp" placeholder="IP do servidor" />
-      <input type="number" id="inputPorta" placeholder="Porta" />
-      <button onclick="adicionarServidor()">Adicionar</button>
-    </div>
+<div class="container">
+    <h1>Launcher SAMP</h1>
 
+    <!-- Formulário para adicionar servidor -->
+    <input type="text" id="inputIp" placeholder="Digite IP:Porta" />
+    <button onclick="adicionarServidor()">Adicionar Servidor</button>
+
+    <!-- Lista de servidores -->
     <div class="server-list" id="serverList">
-      <!-- Lista de servidores -->
+        <!-- Servidores serão listados aqui -->
     </div>
-  </div>
+</div>
 
-  <script>
-    const ip = "IP_DO_SEU_SERVIDOR";
-    const porta = "PORTA_DO_SERVIDOR";
+<script>
+    // Função para adicionar servidor
+    function adicionarServidor() {
+        const inputIp = document.getElementById("inputIp").value;
+        const inputPorta = document.getElementById("inputPorta").value;
 
-    // Função para buscar status do servidor
-    function buscarServidor(ip, porta) {
-      fetch(https://api.open.mp/servers?ip=${ip}&port=${porta})
-        .then(res => res.json())
-        .then(data => {
-          if (data.hostname) {
-            document.getElementById("nome").innerText = data.hostname;
-            document.getElementById("jogadores").innerText = ${data.players}/${data.maxplayers};
-            document.getElementById("status").innerText = "Online";
-          } else {
-            document.getElementById("nome").innerText = "Servidor indisponível";
-            document.getElementById("jogadores").innerText = "-";
-            document.getElementById("status").innerText = "Offline";
-            document.getElementById("status").classList.remove("status");
-            document.getElementById("status").classList.add("offline");
-          }
-        })
-        .catch(() => {
-          document.getElementById("nome").innerText = "Erro ao conectar";
-          document.getElementById("status").innerText = "Offline";
-          document.getElementById("status").classList.remove("status");
-          document.getElementById("status").classList.add("offline");
+        if (inputIp && inputPorta) {
+            const server = { ip: inputIp, porta: inputPorta };
+            saveServerToLocalStorage(server);
+            inputIp.value = ''; // Limpar o campo após adicionar
+            carregarServidores();
+        } else {
+            alert('Por favor, preencha os campos de IP e Porta!');
+        }
+    }
+
+    // Função para salvar servidor no localStorage
+    function saveServerToLocalStorage(server) {
+        let servers = JSON.parse(localStorage.getItem('servers')) || [];
+        servers.push(server);
+        localStorage.setItem('servers', JSON.stringify(servers));
+    }
+
+    // Função para carregar servidores
+    function carregarServidores() {
+        const servers = JSON.parse(localStorage.getItem('servers')) || [];
+        const serverList = document.getElementById("serverList");
+        serverList.innerHTML = ''; // Limpar a lista de servidores
+
+        servers.forEach(server => {
+            const serverItem = document.createElement('div');
+            serverItem.classList.add('server-item');
+            serverItem.innerHTML = `
+                <div class="server-info">
+                    IP: ${server.ip} : ${server.porta}
+                </div>
+                <div class="favorite">
+                    <input type="checkbox" id="fav-${server.ip}" onchange="marcarFavorito('${server.ip}')">
+                    <label for="fav-${server.ip}">Favorito</label>
+                </div>
+                <button onclick="consultarStatus('${server.ip}', '${server.porta}')">Consultar Status</button>
+                <button onclick="removerServidor('${server.ip}')">Remover Servidor</button>
+            `;
+            serverList.appendChild(serverItem);
         });
     }
 
-    // Função para abrir o servidor no SAMP
-    function entrarNoServidor() {
-      window.location.href = samp://${ip}:${porta};
+    // Função para consultar status do servidor (simulado)
+    function consultarStatus(ip, porta) {
+        fetch(`https://api.open.mp/servers?ip=${ip}&port=${porta}`)
+            .then(response => response.json())
+            .then(data => {
+                const status = `Jogadores: ${data.players}/100, Ping: ${data.ping}ms`;
+                alert('Status do Servidor: ' + status);
+            })
+            .catch(error => {
+                console.error('Erro ao consultar o servidor:', error);
+                alert('Erro ao consultar o servidor!');
+            });
     }
 
-    // Função para adicionar um servidor à lista
-    function adicionarServidor() {
-      const inputIp = document.getElementById("inputIp").value;
-      const inputPorta = document.getElementById("inputPorta").value;
-
-      if (inputIp && inputPorta) {
-        const serverItem = document.createElement("div");
-        serverItem.innerHTML = 
-          <strong>IP:</strong> ${inputIp} <strong>Porta:</strong> ${inputPorta}
-          <button onclick="deletarServidor(this)">Deletar</button>
-        ;
-        document.getElementById("serverList").appendChild(serverItem);
-        localStorage.setItem(server_${inputIp}_${inputPorta}, JSON.stringify({ ip: inputIp, porta: inputPorta }));
-      }
+    // Função para marcar servidor como favorito
+    function marcarFavorito(ip) {
+        alert(`${ip} marcado como favorito!`);
+        // Salvar status de favorito no localStorage se necessário
     }
 
-    // Função para deletar servidor
-    function deletarServidor(button) {
-      const serverItem = button.parentElement;
-      serverItem.remove();
-
-      const ip = serverItem.querySelector('strong').nextElementSibling.textContent.split(":")[1].trim();
-      const porta = serverItem.querySelector('strong').nextElementSibling.nextElementSibling.textContent.trim();
-
-      localStorage.removeItem(server_${ip}_${porta});
+    // Função para remover servidor
+    function removerServidor(ip) {
+        let servers = JSON.parse(localStorage.getItem('servers')) || [];
+        servers = servers.filter(server => server.ip !== ip);
+        localStorage.setItem('servers', JSON.stringify(servers));
+        carregarServidores();
     }
 
-    // Função para carregar servidores da localStorage
-    function carregarServidores() {
-      const servidoresSalvos = Object.keys(localStorage).filter(key => key.startsWith('server_'));
-
-      servidoresSalvos.forEach(key => {
-        const servidor = JSON.parse(localStorage.getItem(key));
-        const serverItem = document.createElement("div");
-        serverItem.innerHTML = 
-          <strong>IP:</strong> ${servidor.ip} <strong>Porta:</strong> ${servidor.porta}
-          <button onclick="deletarServidor(this)">Deletar</button>
-        ;
-        document.getElementById("serverList").appendChild(serverItem);
-      });
-    }
-
-    // Carregar servidores ao abrir
+    // Carregar servidores ao carregar a página
     window.onload = carregarServidores;
-  </script>
+</script>
 
 </body>
 </html>
